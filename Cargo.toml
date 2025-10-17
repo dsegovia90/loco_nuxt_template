@@ -3,7 +3,6 @@ name = "loco_nuxt_template"
 version = "0.1.0"
 edition = "2021"
 publish = false
-default-run = "loco_nuxt_template-cli"
 
 [workspace]
 [workspace.dependencies]
