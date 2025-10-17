@@ -75,8 +75,7 @@ WORKDIR /app/frontend
 COPY frontend/package.json frontend/bun.lock ./
 
 # Install dependencies with cache mount
-RUN --mount=type=cache,target=/root/.npm \
-    bun ci
+RUN bun install --frozen-lockfile
 
 # Copy frontend source code
 COPY frontend/ ./
