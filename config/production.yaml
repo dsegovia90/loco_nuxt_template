@@ -7,7 +7,7 @@ logger:
   # Enable pretty backtrace (sets RUST_BACKTRACE=1)
   pretty_backtrace: true
   # Log level, options: trace, debug, info, warn or error.
-  level: debug
+  level: info
   # Define the logging format. options: compact, pretty or json
   format: compact
   # By default the logger has filtering only logs that came from your code or logs that came from `loco` framework. to see all third party libraries
@@ -19,9 +19,9 @@ server:
   # Port on which the server will listen. the server binding is 0.0.0.0:{PORT}
   port: 5150
   # Binding for the server (which interface to bind to)
-  binding: localhost
+  binding: 0.0.0.0
   # The UI hostname or IP address that mailers will point to.
-  host: http://localhost
+  host: http://0.0.0.0
   # Out of the box middleware configuration. to disable middleware you can changed the `enable` field to `false` of comment the middleware block
   middlewares:
     fallback:
@@ -39,11 +39,7 @@ server:
 
 # Worker Configuration
 workers:
-  # specifies the worker mode. Options:
-  #   - BackgroundQueue - Workers operate asynchronously in the background, processing queued.
-  #   - ForegroundBlocking - Workers operate in the foreground and block until tasks are completed.
-  #   - BackgroundAsync - Workers operate asynchronously in the background, processing tasks with async capabilities.
-  mode: BackgroundAsync
+  mode: BackgroundQueue
 
 
 
@@ -51,13 +47,9 @@ workers:
 mailer:
   # SMTP mailer configuration.
   smtp:
-    # Enable/Disable smtp mailer.
     enable: true
-    # SMTP server host. e.x localhost, smtp.gmail.com
     host: localhost
-    # SMTP server port
     port: 1025
-    # Use secure connection (SSL/TLS).
     secure: false
     # auth:
     #   user:
@@ -75,7 +67,7 @@ mailer:
 # Database Configuration
 database:
   # Database connection URI
-  uri: {{ get_env(name="DATABASE_URL", default="postgres://postgres:postgres@localhost:5432/loco_nuxt_template_development") }}
+  uri: {{ get_env(name="DATABASE_URL") }}
   # When enabled, the sql query will be logged.
   enable_logging: false
   # Set the timeout duration when acquiring a connection.
@@ -85,7 +77,7 @@ database:
   # Minimum number of connections for a pool.
   min_connections: {{ get_env(name="DB_MIN_CONNECTIONS", default="1") }}
   # Maximum number of connections for a pool.
-  max_connections: {{ get_env(name="DB_MAX_CONNECTIONS", default="1") }}
+  max_connections: {{ get_env(name="DB_MAX_CONNECTIONS", default="20") }}
   # Run migration up when application loaded
   auto_migrate: true
   # Truncate database when application loaded. This is a dangerous operation, make sure that you using this flag only on dev environments or test mode
@@ -98,6 +90,6 @@ auth:
   # JWT authentication
   jwt:
     # Secret key for token generation and verification
-    secret: {{ get_env(name="JWT_SECRET", default="k4LeBNQ9hJZehhoIm4yp") }}
+    secret: {{ get_env(name="JWT_SECRET", default="") }}
     # Token expiration time in seconds
     expiration: 604800 # 7 days
