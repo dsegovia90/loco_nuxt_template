@@ -1,7 +1,7 @@
 // auth mailer
 #![allow(non_upper_case_globals)]
 
-use loco_rs::prelude::*;
+use loco_rs::{environment::Environment, prelude::*};
 use serde_json::json;
 
 use crate::models::users;
@@ -68,6 +68,10 @@ impl AuthMailer {
     ///
     /// When email sending is failed
     pub async fn send_magic_link(ctx: &AppContext, user: &users::Model) -> Result<()> {
+        let host = match ctx.environment {
+            Environment::Development => "http://localhost:3000",
+            _ => &ctx.config.server.full_url(),
+        };
         Self::mail_template(
             ctx,
             &magic_link,
@@ -78,7 +82,7 @@ impl AuthMailer {
                   "token": user.magic_link_token.clone().ok_or_else(|| Error::string(
                             "the user model not contains magic link token",
                     ))?,
-                  "host": ctx.config.server.full_url()
+                  "host": host
                 }),
                 ..Default::default()
             },

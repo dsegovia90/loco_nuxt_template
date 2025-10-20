@@ -31,7 +31,8 @@ pub struct ResetParams {
     pub password: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, ts_rs::TS)]
+#[ts(export)]
 pub struct MagicLinkParams {
     pub email: String,
 }
