@@ -1,4 +1,5 @@
 import type { CurrentResponse } from "~/bindings/CurrentResponse";
+import type { MagicLinkParams } from "~/bindings/MagicLinkParams";
 import type { LoginParams } from "~/bindings/LoginParams";
 import type { LoginResponse } from "~/bindings/LoginResponse";
 import type { RegisterParams } from "~/bindings/RegisterParams";
@@ -17,6 +18,7 @@ export const useUserStore = defineStore("user", () => {
   const router = useRouter();
   const user = ref<User | null>(null);
   const loading = ref(false);
+  const toast = useToast();
 
   onMounted(() => {
     fetchCurrentUser();
@@ -68,6 +70,44 @@ export const useUserStore = defineStore("user", () => {
       });
   };
 
+  const handleMagicLink = async (
+    magicLinkParams: MagicLinkParams,
+    sideEffect: () => void,
+  ) => {
+    await api<unknown, MagicLinkParams>("/api/auth/magic-link", {
+      method: "POST",
+      body: magicLinkParams,
+    })
+      .then(() => {
+        toast.add({
+          title: "Magic link sent!",
+          icon: "lucide:mail",
+        });
+      })
+      .catch((error) => {
+        toast.add({
+          title: "Error sending magic link!",
+          icon: "lucide:mail-x",
+        });
+        console.log(error);
+      })
+      .finally(sideEffect);
+  };
+
+  const verifyMagicLink = async (token: string) => {
+    await api<LoginResponse, MagicLinkParams>(`/api/auth/magic-link/${token}`)
+      .then(setUser)
+      .catch((error) => {
+        toast.add({
+          title: "Error verifying magic link!",
+          description: "Please try again.",
+          icon: "lucide:mail-x",
+        });
+        router.push("/");
+        console.log(error);
+      });
+  };
+
   const handleLogout = async () => {
     await api("/api/auth/logout").catch((error) => {
       console.log(error);
@@ -92,7 +132,9 @@ export const useUserStore = defineStore("user", () => {
     loading,
     fetchCurrentUser,
     handleLogin,
+    handleMagicLink,
     handleLogout,
     handleRegister,
+    verifyMagicLink,
   };
 });

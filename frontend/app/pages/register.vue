@@ -54,7 +54,7 @@ const onSubmit = async (values: FormSubmitEvent<Schema>) => {
 
 <template>
   <main class="flex items-center min-h-dvh">
-    <UPageCard class="max-w-md sm:min-w-md mx-auto">
+    <UCard class="max-w-md sm:min-w-md mx-auto">
       <UAuthForm
         title="Register"
         description="Create a new account."
@@ -68,6 +68,6 @@ const onSubmit = async (values: FormSubmitEvent<Schema>) => {
           <ULink to="/" class="text-primary font-medium">Login</ULink>.
         </template>
       </UAuthForm>
-    </UPageCard>
+    </UCard>
   </main>
 </template>

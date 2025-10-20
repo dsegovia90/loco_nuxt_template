@@ -4,8 +4,22 @@ import { z } from "zod";
 import { useUserStore } from "~/stores/user";
 
 const userStore = useUserStore();
+const magicLinkAuthForm = useTemplateRef("magicLinkAuthForm");
 
-const fields = ref<AuthFormField[]>([
+const tabItems = [
+  {
+    label: "Password",
+    icon: "i-lucide-user",
+    slot: "password",
+  },
+  {
+    label: "Magic Link",
+    icon: "lucide:wand-sparkles",
+    slot: "magic-link",
+  },
+];
+
+const passwordFields = ref<AuthFormField[]>([
   {
     name: "email",
     type: "text",
@@ -18,7 +32,7 @@ const fields = ref<AuthFormField[]>([
   },
 ]);
 
-const schema = z.object({
+const passwordSchema = z.object({
   email: z.email("Invalid email address."),
   password: z
     .string("Password is required.")
@@ -26,31 +40,79 @@ const schema = z.object({
     .max(100),
 });
 
-type Schema = z.output<typeof schema>;
+type PasswordSchema = z.output<typeof passwordSchema>;
 
-const onSubmit = async (values: FormSubmitEvent<Schema>) => {
+const onPasswordSubmit = async (values: FormSubmitEvent<PasswordSchema>) => {
   // Handle form submission
   userStore.handleLogin(values.data);
+};
+
+const magicLinkFields = ref<AuthFormField[]>([
+  {
+    name: "email",
+    type: "text",
+    label: "Email",
+  },
+]);
+
+const magicLinkSchema = z.object({
+  email: z.email("Invalid email address."),
+});
+
+type MagicLinkSchema = z.output<typeof magicLinkSchema>;
+
+const onMagicLinkSubmit = async (values: FormSubmitEvent<MagicLinkSchema>) => {
+  // Handle form submission
+  userStore.handleMagicLink(values.data, () => {
+    if (magicLinkAuthForm.value) {
+      magicLinkAuthForm.value.state.email = "";
+    }
+  });
 };
 </script>
 
 <template>
   <main class="flex items-center min-h-dvh">
-    <UPageCard class="max-w-md sm:min-w-md mx-auto">
-      <UAuthForm
-        title="Login"
-        description="Enter your credentials to access your account."
-        icon="i-lucide-user"
-        :fields="fields"
-        :schema="schema"
-        @submit="onSubmit"
-      >
-        <template #footer>
-          Not registered yet?
-          <ULink to="/register" class="text-primary font-medium">Register</ULink
-          >.
+    <UCard class="max-w-md sm:min-w-md mx-auto">
+      <UTabs :items="tabItems">
+        <template #password>
+          <UAuthForm
+            title="Login"
+            description="Enter your credentials to access your account."
+            icon="i-lucide-user"
+            :fields="passwordFields"
+            :schema="passwordSchema"
+            :submit="{ label: 'Submit' }"
+            @submit="onPasswordSubmit"
+          >
+            <template #footer>
+              Not registered yet?
+              <ULink to="/register" class="text-primary font-medium"
+                >Register</ULink
+              >.
+            </template>
+          </UAuthForm>
         </template>
-      </UAuthForm>
-    </UPageCard>
+        <template #magic-link>
+          <UAuthForm
+            ref="magicLinkAuthForm"
+            title="Magic Link"
+            description="Enter your email, and receive a magic link."
+            icon="lucide:wand-sparkles"
+            :fields="magicLinkFields"
+            :schema="magicLinkSchema"
+            :submit="{ label: 'Submit' }"
+            @submit="onMagicLinkSubmit"
+          >
+            <template #footer>
+              Not registered yet?
+              <ULink to="/register" class="text-primary font-medium"
+                >Register</ULink
+              >.
+            </template>
+          </UAuthForm>
+        </template>
+      </UTabs>
+    </UCard>
   </main>
 </template>
