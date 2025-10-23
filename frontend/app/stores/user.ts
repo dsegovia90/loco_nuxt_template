@@ -5,6 +5,8 @@ import type { LoginResponse } from "~/bindings/LoginResponse";
 import type { RegisterParams } from "~/bindings/RegisterParams";
 import { api } from "~/utils/api";
 import { defineStore } from "pinia";
+import type { ResetParams } from "~/bindings/ResetParams";
+import type { ForgotParams } from "~/bindings/ForgotParams";
 
 interface User {
   token: string;
@@ -115,6 +117,46 @@ export const useUserStore = defineStore("user", () => {
     setUser(null);
   };
 
+  const handlePasswordReset = async (params: ForgotParams) => {
+    await api<unknown, ForgotParams>("/api/auth/forgot", {
+      method: "POST",
+      body: params,
+    })
+      .then(() => {
+        toast.add({
+          title: "Password reset email sent!",
+          icon: "lucide:mail",
+        });
+      })
+      .catch((error) => {
+        toast.add({
+          title: "Error sending password reset email!",
+          icon: "lucide:mail-x",
+        });
+        console.log(error);
+      });
+  };
+
+  const handlePasswordChange = async (params: ResetParams) => {
+    await api<unknown, ResetParams>("/api/auth/reset", {
+      method: "POST",
+      body: params,
+    })
+      .then(() => {
+        toast.add({
+          title: "Password changed!",
+          icon: "lucide:check",
+        });
+      })
+      .catch((error) => {
+        toast.add({
+          title: "Error changing password!",
+          icon: "lucide:x",
+        });
+        console.log(error);
+      });
+  };
+
   watch([user, loading], ([user, loading]) => {
     if (!loading) {
       return;
@@ -135,6 +177,8 @@ export const useUserStore = defineStore("user", () => {
     handleMagicLink,
     handleLogout,
     handleRegister,
+    handlePasswordReset,
+    handlePasswordChange,
     verifyMagicLink,
   };
 });

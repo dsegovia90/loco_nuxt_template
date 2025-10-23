@@ -64,8 +64,17 @@ const onSubmit = async (values: FormSubmitEvent<Schema>) => {
         @submit="onSubmit"
       >
         <template #footer>
-          Already have an account?
-          <ULink to="/" class="text-primary font-medium">Login</ULink>.
+          <CardFooterLink
+            class="mb-1"
+            text="Already have an account?"
+            to="/"
+            link-text="Login"
+          />
+          <CardFooterLink
+            text="Forgot Password?"
+            to="/forgot"
+            link-text="Recover Password"
+          />
         </template>
       </UAuthForm>
     </UCard>
