@@ -20,12 +20,14 @@ fn _get_allow_email_domain_re() -> &'static Regex {
     })
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, ts_rs::TS)]
+#[ts(export)]
 pub struct ForgotParams {
     pub email: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, ts_rs::TS)]
+#[ts(export)]
 pub struct ResetParams {
     pub token: String,
     pub password: String,

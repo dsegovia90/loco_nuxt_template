@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import CardFooterLink from "@/components/CardFooterLink.vue";
+
 import type { AuthFormField, FormSubmitEvent } from "@nuxt/ui";
 import { z } from "zod";
 import { useUserStore } from "~/stores/user";
@@ -86,10 +88,17 @@ const onMagicLinkSubmit = async (values: FormSubmitEvent<MagicLinkSchema>) => {
             @submit="onPasswordSubmit"
           >
             <template #footer>
-              Not registered yet?
-              <ULink to="/register" class="text-primary font-medium"
-                >Register</ULink
-              >.
+              <CardFooterLink
+                class="mb-1"
+                text="Not registered yet?"
+                to="/register"
+                link-text="Register"
+              />
+              <CardFooterLink
+                text="Forgot Password?"
+                to="/forgot"
+                link-text="Recover Password"
+              />
             </template>
           </UAuthForm>
         </template>
@@ -105,10 +114,17 @@ const onMagicLinkSubmit = async (values: FormSubmitEvent<MagicLinkSchema>) => {
             @submit="onMagicLinkSubmit"
           >
             <template #footer>
-              Not registered yet?
-              <ULink to="/register" class="text-primary font-medium"
-                >Register</ULink
-              >.
+              <CardFooterLink
+                class="mb-1"
+                text="Not registered yet?"
+                to="/register"
+                link-text="Register"
+              />
+              <CardFooterLink
+                text="Forgot Password?"
+                to="/forgot"
+                link-text="Recover Password"
+              />
             </template>
           </UAuthForm>
         </template>

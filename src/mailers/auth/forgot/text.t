@@ -1,3 +1,3 @@
 Reset your password with this link:
 
-http://localhost/reset#{{resetToken}}
+<a href="{{host}}/forgot?token={{resetToken}}" target="_blank">
