@@ -27,7 +27,7 @@ server:
     static:
       enable: true
       must_exist: true
-      precompressed: false
+      precompressed: true
       folder:
         uri: "/"
         path: ".output/public"
